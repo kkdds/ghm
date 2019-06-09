@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>赶海多控版</title>
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="../css/com.css"/>
+<script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="../js/ghm.js"></script>
+</head>
+<body>
+<audio id="myaudio" src="../voice/prjsjqpc.mp3" >audio tag</audio>
+
+<div class="left_div"style="min-height:616px">
+  <div class="top_div">
+
+    <table style="width:100%;height: 100%">
+      <tr>
+      <td width="25%" style="text-align: right;">炉温</td>
+      <td >
+        <span id="tmp1" class="Digiface">100.00</span>
+        <img src="../css/ssd.png" style="height:44px;width:16px"/>
+      </td>
+      </tr>
+    </table>
+
+     &nbsp;
+  </div>
+  <div class="btm_div">
+    <div class="inputGroup">
+      <input id="radio1" name="radio" type="radio" net="100">
+      <label for="radio1"><div style="height:14%">&nbsp;</div>台位 1 号</label>
+    </div>
+    <div class="inputGroup">
+      <input id="radio2" name="radio" type="radio" net="120">
+      <label for="radio2"><div style="height:14%">&nbsp;</div>台位 2 号</label>
+    </div>
+    <div class="inputGroup">
+      <input id="radio3" name="radio" type="radio" net="148">
+      <label for="radio3"><div style="height:14%">&nbsp;</div>台位 3 号</label>
+    </div>
+    <div class="inputGroup">
+      <input id="radio4" name="radio" type="radio" net="104">
+      <label for="radio4"><div style="height:14%">&nbsp;</div>台位 4 号</label>
+    </div>
+    <div class="inputGroup">
+      <input id="radio5" name="radio" type="radio" net="144">
+      <label for="radio5"><div style="height:14%">&nbsp;</div>台位 5 号</label>
+    </div>
+  </div>
+</div>
+
+<div id="overlay">
+  <div style="top:30%; left:35%; position:absolute; text-align:center">
+    <img src="../css/load.gif" style="height:282px;width:281px"/>
+  </div>
+</div>
+
+<div class="mid_div">
+  <div class="top_div ">
+    <table style="width:100%;height: 100%">
+      <tr>
+      <td width="2%">&nbsp;</td>
+      <td width="33%">
+        <div class="onoffswitch">
+            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch">
+            <label class="onoffswitch-label" for="myonoffswitch">
+                <span class="onoffswitch-inner"></span>
+                <span class="onoffswitch-switch"></span>
+            </label>
+        </div>
+      </td>
+      <td>
+        <span id="cai_title">请选择烹饪菜品</span>
+      </td>
+      <td width="33%">
+        &nbsp;
+      </td>
+      </tr>
+    </table>
+  </div>
+
+    <div class="mclass_sel">
+      <div class="men_div"
+       style="background-image:url('../image/men1.jpg');"
+       bgp="../image/men1.jpg"
+       caiclass="95" caitime="15" vname="1">
+          <div class="imgzone" style="height:80%"></div>
+          <div class="selzone ">金汤花胶老鸡闷锅</div>
+      </div>
+      <div class="men_div"
+       style="background-image:url('../image/men2.jpg');"
+       bgp="../image/men2.jpg"
+       caiclass="95" caitime="42" vname="2">
+          <div class="imgzone" style="height:80%"></div>
+          <div class="selzone ">金汤东海三鲜闷锅</div>
+      </div>
+      <div class="men_div"
+       style="background-image:url('../image/men3.jpg');"
+       bgp="../image/men3.jpg"
+       caiclass="95" caitime="24" vname="3">
+          <div class="imgzone" style="height:80%"></div>
+          <div class="selzone ">金汤白蟹豆腐闷锅</div>
+      </div>
+      <div class="men_div"
+       style="background-image:url('../image/men4.jpg');"
+       bgp="../image/men4.jpg"
+       caiclass="95" caitime="180" vname="4">
+          <div class="imgzone" style="height:80%"></div>
+          <div class="selzone ">赶海海鲜粥</div>
+      </div>
+    </div>
+
+</div>
+
+<div class="right_div">
+  <div class="top_div">
+    <div style="height:24%">&nbsp;</div>烹饪计时
+  </div>
+  <div class="btm_div">
+    <div id="addtime">
+      <div id="dectimebtn" class="digi-div ambtn" style="margin:7% 20% 0% 0%;">-</div>
+      <div class="digi-div" style="position:absolute; left:0px; top:0px; width:84%; height:100%">
+          <span >min</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span >sec</span>
+          <div class="Digiface">
+            <span id="minute_show">00</span> : <span id="second_show">00</span>
+          </div>
+          <div style="padding-top:3%;color:red">运行时点击加减号<br>可以增加减少30秒</div>
+      </div>
+      <div id="addtimebtn" class="digi-div ambtn" style="margin:7% 0% 0% 20%;">+</div>
+    </div>
+
+      <div style="height:3%">&nbsp;</div>
+
+      <div class="cbtndiv cmendiv" id="div_btn_zq">
+          <img src="../css/prjg.png" id="btn_zq"/>
+      </div>
+      <div class="cbtndiv cmendiv" id="div_btn_stop">
+          <img src="../css/tzsg.png" />
+      </div>
+
+      <div class="cbtndiv c22bdiv" id="btn_sq">
+          <img src="../css/sg.png" onClick="shell_up()"/>
+      </div>
+      <div class="cbtndiv c22bdiv" id="btn_jq">
+          <img src="../css/jg.png" onClick="shell_dw()"/>
+      </div>
+</div>
+
+<div id="ctinfo">操作提示：<span class="ctrl-info">温度达到120度以上，方可开始烹饪</span></div>
+
+<div class="pop">
+  <div class="popMain">
+    <div class="popTop"></div>
+    <div class="popMiddle">
+      <p class="ctrl-info">是否确认？</p>
+    </div>
+    <div class="popBottom">
+      <span class="confirm">确认</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
