@@ -103,7 +103,7 @@ p = GPIO.PWM(moto_1_p, 1500)
 p.start(0)
 
 
-seled_cai='0'
+seled_cai='NA'
 watchdog=0
 eTimer1=False
 eIntval1=5
