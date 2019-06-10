@@ -13,7 +13,7 @@ ttim=0
 t=object
 worktime=time.time()
 
-ver='20190609'
+ver='20190612'
 stapwd='abc'
 setpwd='ghm2019'
 softPath='/home/pi/ghm/'
@@ -159,6 +159,8 @@ def return_sta(request):
     global shell_up_down,sta_shell,guolupower,settemp,timediff
     global stapwd,setpwd,softPath,tempeture_1,tempeture_2,ttim,t
     global ttfinck,worktime,seled_cai
+    global shell_ud_t1_set,shell_ud_t2u_set,shell_ud_t2d_set,shell_ud_t3_set
+    global spdu,spdd,ver,sn
 
     hhdd=[('Access-Control-Allow-Origin','*'),('Content-Type','application/json')]
     po = yield from request.post()
@@ -250,6 +252,7 @@ def return_sta(request):
                 tbody= '{"shell":"up"}'
             elif po['d']== 'dw':
                 shell_dw()
+                running_sta=1
                 eIntval1=int(time.time())+int(po['dltime'])
                 tbody= '{"shell":"dw"}'
             elif sta_shell==1:
@@ -257,6 +260,62 @@ def return_sta(request):
                 tbody= '{"a":"shell","b":"stop"}'
             print(tbody)
             ttim=time.time()
+            return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
+
+        elif po['m'] == 'gset':
+            tbody = '{"get":"set",'
+            tbody+= '"t1":"'+str(shell_ud_t1_set)+'",'
+            tbody+= '"t2u":"'+str(shell_ud_t2u_set)+'",'
+            tbody+= '"t2d":"'+str(shell_ud_t2d_set)+'",'
+            tbody+= '"t3":"'+str(shell_ud_t3_set)+'",'
+            tbody+= '"spdu":"'+str(spdu)+'",'
+            tbody+= '"spdd":"'+str(spdd)+'",'
+            tbody+= '"ver":"'+ver+'",'
+            tbody+= '"sn":"'+str(sn)+'"}'
+            return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
+
+        elif po['m'] == 'wset':
+            shell_ud_t1_set=int(po['t1'])
+            shell_ud_t2u_set=int(po['t2u'])
+            shell_ud_t2d_set=int(po['t2d'])
+            shell_ud_t3_set=int(po['t3'])
+            spdu=int(po['spdu'])
+            spdd=int(po['spdd'])
+            sn=po['sn']
+            kconfig.set("gh","shell_ud_t1_set",po['t1'])
+            kconfig.set("gh","shell_ud_t2u_set",po['t2u'])
+            kconfig.set("gh","shell_ud_t2d_set",po['t2d'])
+            kconfig.set("gh","shell_ud_t3_set",po['t3'])
+            kconfig.set("gh","spdu",po['spdu'])
+            kconfig.set("gh","spdd",po['spdd'])
+            kconfig.set("gh","sn",po['sn'])
+            kconfig.write(open(softPath+"setting.ini","w"))
+            tbody= '{"p":"ok","w":"ok"}'
+            return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
+
+        elif po['m'] == 'reboot':
+            system('sudo reboot')
+
+        elif po['m'] == 'upgrade':
+            tbody= '{"p":"成功"}'
+            #if posted['tp']=='core':
+            try:
+                upedfile=posted['cfile']
+                ufilename = upedfile.filename
+                ufilecont = upedfile.file
+                content = ufilecont.read()
+                with open(softPath+ufilename, 'wb') as f:
+                    f.write(content)
+            except:
+                tbody='{"p":"上传文件打开失败"}'
+            #解压缩
+            try:
+                fz = zipfile.ZipFile(softPath+"core.zip",'r')
+                for file in fz.namelist():
+                    fz.extract(file,softPath)
+                fz.close()
+            except:
+                tbody='{"p":"解压失败"}'
             return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
 
     else:
@@ -357,66 +416,6 @@ def ttfin():
         ttim=time.time()
         print('zq eTimer1 start')
         GPIO.output(io_zq, 0)
-
-
-
-@asyncio.coroutine
-def setting(request):
-    global shell_ud_t1_set,shell_ud_t2u_set,shell_ud_t2d_set,shell_ud_t3_set
-    global ver,sn,spdu,spdd
-    global stapwd,setpwd,softPath
-    hhdd=[('Access-Control-Allow-Origin','*'),('Content-Type','application/json')]
-    tbody= '{"p":"error"}'
-
-    po = yield from request.post()
-    if po['m'] == 'l' and po['p'] == setpwd:
-        tbody= '{"p":"ok"}'
-        return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
-
-    if po['m'] == 'get':
-        try:
-            ip=po['ip']
-        except:
-            ip=''
-        tbody = '{"p":"ok",'
-        tbody+= '"ver":"'+ver+'",'
-        tbody+= '"t1":"'+str(shell_ud_t1_set)+'",'
-        tbody+= '"t2u":"'+str(shell_ud_t2u_set)+'",'
-        tbody+= '"t2d":"'+str(shell_ud_t2d_set)+'",'
-        tbody+= '"t3":"'+str(shell_ud_t3_set)+'",'
-        tbody+= '"spdu":"'+str(spdu)+'",'
-        tbody+= '"spdd":"'+str(spdd)+'",'
-        tbody+= '"ip":"'+str(ip)+'",'
-        tbody+= '"sn":"'+str(sn)+'",'
-        tbody+= '"stapwd":"'+str(stapwd)+'"}'
-        return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
-
-    if po['m'] == 'w' and po['p'] == setpwd:
-        shell_ud_t1_set=int(po['t1'])
-        shell_ud_t2u_set=int(po['t2u'])
-        shell_ud_t2d_set=int(po['t2d'])
-        shell_ud_t3_set=int(po['t3'])
-        spdu=int(po['spdu'])
-        spdd=int(po['spdd'])
-        sn=po['sn']
-        stapwd=po['stapwd']
-        kconfig.set("gh","shell_ud_t1_set",po['t1'])
-        kconfig.set("gh","shell_ud_t2u_set",po['t2u'])
-        kconfig.set("gh","shell_ud_t2d_set",po['t2d'])
-        kconfig.set("gh","shell_ud_t3_set",po['t3'])
-        kconfig.set("gh","spdu",po['spdu'])
-        kconfig.set("gh","spdd",po['spdd'])
-        kconfig.set("gh","sn",po['sn'])
-        kconfig.set("gh","stapwd",stapwd)
-        kconfig.write(open(softPath+"setting.ini","w"))
-        tbody= '{"p":"ok","w":"ok"}'
-        return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
-
-
-    if po['m'] == 'reboot':
-        system('sudo reboot')
-
-    return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
 
 
 import zipfile
@@ -538,7 +537,7 @@ def init(loop):
     #使用aiohttp_jinja2
     aiohttp_jinja2.setup(app,loader=jinja2.FileSystemLoader(softPath+'tpl'))
     app.router.add_route('POST', '/sta', return_sta)
-    app.router.add_route('POST', '/setting', setting)
+    #app.router.add_route('POST', '/setting', setting)
     app.router.add_route('*', '/sys_update', sys_update)
     app.router.add_route('*', '/upgrade', upgrade)
     srv = yield from loop.create_server(app.make_handler(), '0.0.0.0', 9001)
