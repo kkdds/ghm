@@ -297,17 +297,17 @@ def return_sta(request):
             system('sudo reboot')
 
         elif po['m'] == 'upgrade':
-            tbody= '{"p":"成功"}'
-            #if posted['tp']=='core':
+            tbody= '更新成功'
+            #if po['tp']=='core':
             try:
-                upedfile=posted['cfile']
+                upedfile=po['cfile']
                 ufilename = upedfile.filename
                 ufilecont = upedfile.file
                 content = ufilecont.read()
                 with open(softPath+ufilename, 'wb') as f:
                     f.write(content)
             except:
-                tbody='{"p":"上传文件打开失败"}'
+                tbody='上传文件打开失败'
             #解压缩
             try:
                 fz = zipfile.ZipFile(softPath+"core.zip",'r')
@@ -315,7 +315,7 @@ def return_sta(request):
                     fz.extract(file,softPath)
                 fz.close()
             except:
-                tbody='{"p":"解压失败"}'
+                tbody='解压失败'
             return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
 
     else:
