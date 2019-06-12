@@ -241,7 +241,7 @@ def return_sta(request):
 
                 eIntval1=time.time()
                 GPIO.output(io_zq, 1)
-                tbody= '{"zq","off"}'
+                tbody= '{"zq":"off"}'
             print(tbody)
             return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
 
