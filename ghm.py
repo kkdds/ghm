@@ -13,9 +13,8 @@ ttim=0
 t=object
 worktime=time.time()
 
-ver='20190613'
+ver='190617'
 stapwd='abc'
-setpwd='ghm2019'
 softPath='/home/pi/ghm/'
 
 kconfig=configparser.ConfigParser()
@@ -157,7 +156,7 @@ WAM_AP()
 def return_sta(request):
     global eTimer1,eIntval1,watchdog,running_sta
     global shell_up_down,sta_shell,guolupower,settemp,timediff
-    global stapwd,setpwd,softPath,tempeture_1,tempeture_2,ttim,t
+    global stapwd,softPath,tempeture_1,tempeture_2,ttim,t
     global ttfinck,worktime,seled_cai
     global shell_ud_t1_set,shell_ud_t2u_set,shell_ud_t2d_set,shell_ud_t3_set
     global spdu,spdd,ver,sn
@@ -297,7 +296,8 @@ def return_sta(request):
             system('sudo reboot')
 
         elif po['m'] == 'upgrade':
-            tbody= 'Update Successful'
+            #tbody= 'Update Successful'
+            tbody= '升级成功，正在重启'
             #if po['tp']=='core':
             try:
                 upedfile=po['cfile']
@@ -307,7 +307,7 @@ def return_sta(request):
                 with open(softPath+ufilename, 'wb') as f:
                     f.write(content)
             except:
-                tbody='Failed to open uploaded file'
+                tbody='Fail to Open File'
             #解压缩
             try:
                 fz = zipfile.ZipFile(softPath+"core.zip",'r')
