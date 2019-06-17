@@ -13,7 +13,7 @@ ttim=0
 t=object
 worktime=time.time()
 
-ver='20190612'
+ver='20190613'
 stapwd='abc'
 setpwd='ghm2019'
 softPath='/home/pi/ghm/'
@@ -297,7 +297,7 @@ def return_sta(request):
             system('sudo reboot')
 
         elif po['m'] == 'upgrade':
-            tbody= '更新成功'
+            tbody= 'Update Successful'
             #if po['tp']=='core':
             try:
                 upedfile=po['cfile']
@@ -307,15 +307,16 @@ def return_sta(request):
                 with open(softPath+ufilename, 'wb') as f:
                     f.write(content)
             except:
-                tbody='上传文件打开失败'
+                tbody='Failed to open uploaded file'
             #解压缩
             try:
                 fz = zipfile.ZipFile(softPath+"core.zip",'r')
                 for file in fz.namelist():
                     fz.extract(file,softPath)
                 fz.close()
+                system('sudo reboot')
             except:
-                tbody='解压失败'
+                tbody='Fail to decompression'
             return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
 
     else:
@@ -494,7 +495,7 @@ def get_temp():
 def loop_info():
     global eTimer1,eIntval1,sta_shell,running_sta
     global watchdog,ttim,time_end
-    global t,p,timediff
+    global t,p,timediff,seled_cai
     #global I_prot
     while True:
         yield from asyncio.sleep(0.05)
@@ -514,6 +515,7 @@ def loop_info():
                 timediff=0
                 sta_shell=2
                 running_sta=0
+                seled_cai='NA'
                 time_end=1
                 GPIO.output(io_zq, 1)
                 print('eTimer1 end '+str(time.time()-ttim))
