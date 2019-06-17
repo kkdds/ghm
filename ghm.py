@@ -13,7 +13,7 @@ ttim=0
 t=object
 worktime=time.time()
 
-ver='190617'
+ver='190617i'
 stapwd='abc'
 softPath='/home/pi/ghm/'
 
@@ -113,6 +113,7 @@ guolupower=0
 running_sta='0'
 timediff=0
 time_end=0
+toreboot=0
 '''
 sta_shell
 0 top stop
@@ -159,7 +160,7 @@ def return_sta(request):
     global stapwd,softPath,tempeture_1,tempeture_2,ttim,t
     global ttfinck,worktime,seled_cai
     global shell_ud_t1_set,shell_ud_t2u_set,shell_ud_t2d_set,shell_ud_t3_set
-    global spdu,spdd,ver,sn
+    global spdu,spdd,ver,sn,toreboot
 
     hhdd=[('Access-Control-Allow-Origin','*'),('Content-Type','application/json')]
     po = yield from request.post()
@@ -297,7 +298,7 @@ def return_sta(request):
 
         elif po['m'] == 'upgrade':
             #tbody= 'Update Successful'
-            tbody= '升级成功，正在重启'
+            tbody= '{"p":"升级成功，重启中"}'
             #if po['tp']=='core':
             try:
                 upedfile=po['cfile']
@@ -307,16 +308,20 @@ def return_sta(request):
                 with open(softPath+ufilename, 'wb') as f:
                     f.write(content)
             except:
-                tbody='Fail to Open File'
+                tbody='{"p":"Open File error"}'
             #解压缩
             try:
-                fz = zipfile.ZipFile(softPath+"core.zip",'r')
+                #fz = zipfile.ZipFile(softPath+"core.zip",'r')
+                print(softPath+ufilename)
+                fz = zipfile.ZipFile(softPath+ufilename,'r')
                 for file in fz.namelist():
                     fz.extract(file,softPath)
                 fz.close()
-                system('sudo reboot')
+                print('update done, to reboot')
+                toreboot=1
+                return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
             except:
-                tbody='Fail to decompression'
+                tbody='{"p":"decompression error"}'
             return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
 
     else:
@@ -495,10 +500,12 @@ def get_temp():
 def loop_info():
     global eTimer1,eIntval1,sta_shell,running_sta
     global watchdog,ttim,time_end
-    global t,p,timediff,seled_cai
+    global t,p,timediff,seled_cai,toreboot
     #global I_prot
     while True:
         yield from asyncio.sleep(0.05)
+        if toreboot==1:
+            system('sudo reboot')
         '''
         watchdog+=1
         if watchdog>100:
