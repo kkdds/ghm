@@ -13,7 +13,7 @@ ttim=0
 t=object
 worktime=time.time()
 
-ver='190617i'
+ver='190629t1'
 stapwd='abc'
 softPath='/home/pi/ghm/'
 
