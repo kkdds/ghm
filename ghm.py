@@ -13,7 +13,7 @@ ttim=0
 t=object
 worktime=time.time()
 
-ver='190629t1'
+ver='190630'
 stapwd='abc'
 softPath='/home/pi/ghm/'
 
@@ -135,7 +135,7 @@ seled_cai
 
 
 from os import system
-#system('sudo ifdown wlan0')#停用网卡
+system('sudo ifdown wlan0')#停用无线网卡
 import pexpect
 import re
 from threading import Thread
@@ -245,19 +245,30 @@ def return_sta(request):
             print(tbody)
             return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
 
+        elif po['m'] == 'zq_on':
+            running_sta=1
+            eTimer1=True
+            eIntval1=int(time.time())+int(po['dltime'])
+            ttim=time.time()
+            GPIO.output(io_zq, 0)
+            print('zq eTimer1 start')
+            tbody= '{"zq":"1",'+'"timediff":"'+str(timediff)+'"}'
+            return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
+
         elif po['m'] == 'shell':
             tbody= '{"a":"shell","b":"noaction"}'
-            if po['d']== 'up':
-                shell_up()
-                tbody= '{"shell":"up"}'
-            elif po['d']== 'dw':
-                shell_dw()
-                running_sta=1
-                eIntval1=int(time.time())+int(po['dltime'])
-                tbody= '{"shell":"dw"}'
-            elif sta_shell==1:
+            if sta_shell==1:
                 ttfin()
-                tbody= '{"a":"shell","b":"stop"}'
+                tbody= '{"shell":"0"}'
+            else:
+                if po['d']== 'up':
+                    shell_up()
+                    tbody= '{"shell":"1"}'
+                elif po['d']== 'dw':
+                    shell_dw()
+                    #running_sta=1
+                    #eIntval1=int(time.time())+int(po['dltime'])
+                    tbody= '{"shell":"1"}'
             print(tbody)
             ttim=time.time()
             return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
@@ -330,7 +341,7 @@ def return_sta(request):
 
 
 def shell_dw():
-    global t,shell_up_down,sta_shell,eIntval1
+    global t,shell_up_down,sta_shell
     try:
         t.cancel()
     except:
@@ -358,20 +369,6 @@ def shell_up():
     t.start()
     shell_up_down=0
     sta_shell=1
-
-
-def self_tt1():
-    global ttfinck
-    global t,shell_ud_t1_set,shell_up_down,ttim
-    t = threading.Timer(shell_ud_t1_set/1000, tt2)
-    GPIO.output(moto_1_r, 0)
-    GPIO.output(moto_1_f, 1)
-    p.ChangeDutyCycle(100)
-    t.start()
-    ttfinck=0
-    shell_up_down=0
-    sta_shell=1
-    print('self_tt1 '+str(ttim-time.time()))
 
 def tt2():
     global ttfinck
@@ -413,8 +410,8 @@ def ttfin():
     sta_shell=shell_up_down
     GPIO.output(moto_1_r, 1)
     GPIO.output(moto_1_f, 1)
-    print('shell run end '+str(ttim-time.time()))
-
+    print('shell end '+str(ttim-time.time())+' '+str(sta_shell) )
+    '''
     if sta_shell==2:
         running_sta=1
         eTimer1=True
@@ -422,6 +419,7 @@ def ttfin():
         ttim=time.time()
         print('zq eTimer1 start')
         GPIO.output(io_zq, 0)
+    '''
 
 
 import zipfile
@@ -527,7 +525,7 @@ def loop_info():
                 GPIO.output(io_zq, 1)
                 print('eTimer1 end '+str(time.time()-ttim))
                 eTimer1=False
-                shell_up()
+                #shell_up()
 
     return 1
 
