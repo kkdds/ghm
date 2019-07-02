@@ -13,7 +13,7 @@ ttim=0
 t=object
 worktime=time.time()
 
-ver='190630'
+ver='190702'
 stapwd='abc'
 softPath='/home/pi/ghm/'
 
@@ -525,7 +525,7 @@ def loop_info():
                 GPIO.output(io_zq, 1)
                 print('eTimer1 end '+str(time.time()-ttim))
                 eTimer1=False
-                #shell_up()
+                shell_up()
 
     return 1
 
