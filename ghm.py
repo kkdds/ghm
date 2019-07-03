@@ -13,7 +13,7 @@ ttim=0
 t=object
 worktime=time.time()
 
-ver='190702'
+ver='190703'
 stapwd='abc'
 softPath='/home/pi/ghm/'
 
@@ -269,6 +269,11 @@ def return_sta(request):
                     #running_sta=1
                     #eIntval1=int(time.time())+int(po['dltime'])
                     tbody= '{"shell":"1"}'
+                elif po['d']== 'dwon':
+                    shell_dw()
+                    running_sta=1
+                    eIntval1=int(time.time())+int(po['dltime'])
+                    tbody= '{"shell":"1"}'
             print(tbody)
             ttim=time.time()
             return web.Response(headers=hhdd ,body=tbody.encode('utf-8'))
@@ -412,14 +417,13 @@ def ttfin():
     GPIO.output(moto_1_f, 1)
     print('shell end '+str(ttim-time.time())+' '+str(sta_shell) )
     '''
-    if sta_shell==2:
-        running_sta=1
+    '''
+    if sta_shell==2 and running_sta==1:
         eTimer1=True
         #eIntval1=int(time.time())+int(delaytime)
         ttim=time.time()
         print('zq eTimer1 start')
         GPIO.output(io_zq, 0)
-    '''
 
 
 import zipfile
